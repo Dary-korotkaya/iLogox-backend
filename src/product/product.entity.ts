@@ -1,5 +1,6 @@
-import { Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ProductType, Supplier } from '../supplier/supplier.entity';
+import { Request } from '../request/request.entity';
 
 export class Product {
   @PrimaryGeneratedColumn('uuid')

@@ -31,14 +31,7 @@ export class UserService {
 
     return true;
   }
-  //
-  // logReplyToRequest(requestId: number, replyDetails: any): void {
-  //   // Логика ответа на заявку от поставщика
-  // }
-  //
-  // viewRequestHistory(userId: number): any {
-  //   // Логика просмотра истории заявок
-  // }
+
   async authenticateUser(login: string, password: string): Promise<User> {
     const user = await this.userRepository.findOneBy({ login: login });
 
@@ -56,7 +49,10 @@ export class UserService {
   }
 
   async findById(id: string): Promise<User> {
-    const user = await this.userRepository.findOneBy({ id: id });
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+      relations: { supplier: true, logist: true },
+    });
 
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);

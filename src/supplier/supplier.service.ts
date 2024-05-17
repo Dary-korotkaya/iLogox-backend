@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Supplier } from './supplier.entity';
 import { CreateSupplierDto } from './dtos/CreateSupplier.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -64,11 +64,11 @@ export class SupplierService {
     return true;
   }
 
-  getAllSuppliers() {
-    return '';
-  }
-
-  getSupplierById(id: string) {
-    return '';
+  async getById(id: string) {
+    const supplier = this.supplierRepository.findOneBy({ id: id });
+    if (!supplier) {
+      throw new NotFoundException('Supplier not found');
+    }
+    return supplier;
   }
 }

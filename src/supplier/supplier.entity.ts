@@ -24,8 +24,8 @@ export enum ProductType {
 
 @Entity()
 export class Supplier {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @OneToOne(() => User, (user) => user.supplier)
   user: User;
@@ -36,7 +36,7 @@ export class Supplier {
   @Column()
   companyAddress: string;
 
-  @Column({ type: 'enum', enum: ProductType })
+  @Column({ type: 'enum', enum: ProductType, unique: true })
   productType: ProductType;
 
   @OneToMany(() => Request, (request) => request.supplier)

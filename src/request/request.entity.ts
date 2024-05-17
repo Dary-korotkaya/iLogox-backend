@@ -1,11 +1,28 @@
 import { Logist } from 'src/logist/logist.entity';
-import { Supplier } from 'src/supplier/supplier.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { ProductType, Supplier } from 'src/supplier/supplier.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
+import { RequestProductInfo } from './RequestProductInfo.entity';
 
+export enum RequestStatus {
+  IN_PROCESS,
+  REJECTED,
+  CONFIRMED,
+  COLLECTION,
+  ON_THE_WAY,
+  DELIVERED,
+  WAITING_FOR_PAYMENT,
+  COMPLETED,
+}
 @Entity()
 export class Request {
-  @PrimaryGeneratedColumn()
-  requestId: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => Logist, (logist) => logist.requests, { eager: true })
   logist: Logist;
@@ -13,8 +30,10 @@ export class Request {
   @ManyToOne(() => Supplier, (supplier) => supplier.requests, { eager: true })
   supplier: Supplier;
 
-  // @Column()
-  // productId: string;
+  @OneToMany(() => RequestProductInfo, (productInfo) => productInfo.request, {
+    eager: true,
+  })
+  productInfo: RequestProductInfo[];
 
   @Column({ type: 'timestamp' })
   dateOfDelivery: Date;
@@ -22,9 +41,16 @@ export class Request {
   @Column()
   addressOfDelivery: string;
 
-  @Column()
-  productType: string;
+  @Column({ type: 'enum', enum: ProductType })
+  productType: ProductType;
 
-  @Column()
+  @Column({ default: '' })
   description: string;
+
+  @Column({
+    type: 'enum',
+    enum: RequestStatus,
+    default: RequestStatus.IN_PROCESS,
+  })
+  status: RequestStatus;
 }
